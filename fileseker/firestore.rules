@@ -1,0 +1,67 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isOwner(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId)
+        && request.resource.data.keys().hasOnly([
+          'uid', 'name', 'email', 'createdAt', 'updatedAt'
+        ])
+        && request.resource.data.uid == userId
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 80
+        && request.resource.data.email == request.auth.token.email
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.updatedAt == request.time;
+      allow update: if isOwner(userId)
+        && request.resource.data.keys().hasOnly([
+          'uid', 'name', 'email', 'createdAt', 'updatedAt'
+        ])
+        && request.resource.data.uid == userId
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 80
+        && request.resource.data.email == request.auth.token.email
+        && request.resource.data.createdAt == resource.data.createdAt
+        && request.resource.data.updatedAt == request.time;
+      allow delete: if false;
+
+      match /attendance/{dateId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId)
+          && request.resource.data.keys().hasOnly([
+            'date', 'checkInAt', 'checkInLocation',
+            'checkOutAt', 'checkOutLocation', 'createdAt'
+          ])
+          && request.resource.data.date == dateId
+          && request.resource.data.checkInAt == request.time
+          && request.resource.data.checkInLocation is latlng
+          && request.resource.data.checkInLocation.latitude >= -90
+          && request.resource.data.checkInLocation.latitude <= 90
+          && request.resource.data.checkInLocation.longitude >= -180
+          && request.resource.data.checkInLocation.longitude <= 180
+          && request.resource.data.checkOutAt == null
+          && request.resource.data.checkOutLocation == null
+          && request.resource.data.createdAt == request.time;
+        allow update: if isOwner(userId)
+          && request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['checkOutAt', 'checkOutLocation'])
+          && resource.data.checkOutAt == null
+          && request.resource.data.checkOutAt == request.time
+          && request.resource.data.checkOutAt > resource.data.checkInAt
+          && request.resource.data.checkOutLocation is latlng
+          && request.resource.data.checkOutLocation.latitude >= -90
+          && request.resource.data.checkOutLocation.latitude <= 90
+          && request.resource.data.checkOutLocation.longitude >= -180
+          && request.resource.data.checkOutLocation.longitude <= 180;
+        allow delete: if false;
+      }
+    }
+  }
+}

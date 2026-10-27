@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "660293015231",
+    "project_id": "hemashree-40ecc",
+    "storage_bucket": "hemashree-40ecc.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:660293015231:android:49bdd0825e4b6f8c31980a",
+        "android_client_info": {
+          "package_name": "com.manju.fileseeker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "660293015231-s82rtl06is8fj03jg7f077ke2nr8v67m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAUSa-eQ04zTmo05BV5ZSbBUducoN_CjpE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "660293015231-s82rtl06is8fj03jg7f077ke2nr8v67m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
